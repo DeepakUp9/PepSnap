@@ -1,11 +1,11 @@
 
 let videoElement = document.querySelector("video")
-let recordButton =document.querySelector("#record");
+let recordButton =document.querySelector(".inner-record");
 let recordingState =false;
 let mideaRecorder;
 
-let downloadButton =document.querySelector("#download");
-let capturePhoto =document.querySelector("#capture");
+// let downloadButton =document.querySelector("#download");
+let capturePhoto =document.querySelector(".inner-capture");
 
 
 
@@ -38,9 +38,11 @@ let capturePhoto =document.querySelector("#capture");
     aTag.download =`Video${Date.now()}.mp4`;
     aTag.href =VideioUrl;
 
-    downloadButton.addEventListener("click",function(){
-        aTag.click();
-    })
+    // downloadButton.addEventListener("click",function(){
+    //     aTag.click();
+    // })
+
+    aTag.click();
   
 };
 
@@ -54,20 +56,30 @@ recordButton.addEventListener("click",function(){
               //already recording is going on 
               //stop the recording 
               mideaRecorder.stop();
-              recordButton.innerHTML="Record Video";
+              
               recordingState =false;
+              recordButton.classList.remove("animate-record");
           }
           else{
                   // start the video recording 
                   mideaRecorder.start();
-                  recordButton.innerHTML="Recording....";
+                 
                   recordingState =true;
+
+                  recordButton.classList.add("animate-record");
           }
 });
 
 
 capturePhoto.addEventListener("click",function(){
     //canvas 
+    capturePhoto.classList.add("animate-capture")
+          
+      setTimeout(function(){
+        capturePhoto.classList.remove("animate-capture")
+      },1000);
+
+
     let canvas =document.createElement("canvas");
     canvas.width = 640;   //video widht
     canvas.height =480  // video height
