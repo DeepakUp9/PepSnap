@@ -7,6 +7,8 @@ let mideaRecorder;
 // let downloadButton =document.querySelector("#download");
 let capturePhoto =document.querySelector(".inner-capture");
 
+let filters =document.querySelectorAll(".filter");
+let filterSelected ="none";
 
 
 
@@ -100,3 +102,39 @@ capturePhoto.addEventListener("click",function(){
 
 
 })();
+
+
+
+for(let i=0; i<filters.length;i++){
+
+    filters[i].addEventListener("click",function(e){
+        let currentFiltersSelected = e.target.style.backgroundColor;
+
+        if(currentFiltersSelected==""){
+
+            if(document.querySelector(".filter-div")){
+                document.querySelector(".filter-div").remove();
+                filterSelected ="none";
+                return;
+            }
+        }
+
+          if(filterSelected==currentFiltersSelected){
+              return;
+          }
+
+          let filterDiv =document.createElement("div");
+          filterDiv.classList.add("filter-div");
+          filterDiv.style.backgroundColor =currentFiltersSelected;
+
+          if(filterSelected=="none"){
+              document.body.append(filterDiv);
+          }
+          else{
+              document.querySelector(".filter-div").remove();
+              document.body.append(filterDiv);
+
+          }
+          filterSelected =currentFiltersSelected;
+    });
+}
