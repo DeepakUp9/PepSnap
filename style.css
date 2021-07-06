@@ -103,7 +103,7 @@ video {
     /* background: aquamarine; */
     /* border: 1px solid white; */
     border: 1px solid white;
-    background-image: url("https://images.pexels.com/photos/1408221/pexels-photo-1408221.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+    background-image: url("https://images.pexels.com/photos/2127969/pexels-photo-2127969.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
     background-size: cover;
     background-blend-mode: soft-light;
 }
@@ -113,4 +113,24 @@ video {
     top: 0px;
     height: 100vh;
     width: 100vw;
+}
+
+
+.zoom {
+    flex-direction: column;
+    /* border: 1px solid white; */
+}
+
+.zoom div {
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background: black; */
+    width: 100%;
+}
+
+.fas {
+    font-size: 1.5rem;
+    color: white;
 }

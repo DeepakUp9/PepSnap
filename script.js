@@ -3,6 +3,9 @@ let videoElement = document.querySelector("video")
 let recordButton =document.querySelector(".inner-record");
 let recordingState =false;
 let mideaRecorder;
+let zoomIn =document.querySelector(".zoomIn");
+let zoomOut =document.querySelector(".zoomOut");
+
 
 // let downloadButton =document.querySelector("#download");
 let capturePhoto =document.querySelector(".inner-capture");
@@ -10,6 +13,10 @@ let capturePhoto =document.querySelector(".inner-capture");
 let filters =document.querySelectorAll(".filter");
 let filterSelected ="none";
 
+
+let minZoom=1;
+let maxZoom =3.1;
+let currentZoom =1;
 
 
 
@@ -88,8 +95,13 @@ capturePhoto.addEventListener("click",function(){
 
 
     let ctx =canvas.getContext("2d");
-
     ctx.drawImage(videoElement,0,0);
+
+    if(filterSelected!="none"){
+  ctx.fillStyle = filterSelected;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
+
 
     //download canvas as an image 
     let aTag =document.createElement("a");
@@ -129,12 +141,45 @@ for(let i=0; i<filters.length;i++){
 
           if(filterSelected=="none"){
               document.body.append(filterDiv);
+        
+             
           }
           else{
               document.querySelector(".filter-div").remove();
               document.body.append(filterDiv);
+             
+              
+              
 
           }
           filterSelected =currentFiltersSelected;
     });
 }
+
+
+
+zoomIn.addEventListener("click",function(){
+
+    if(currentZoom+0.1>maxZoom){
+        return;
+
+    }
+    currentZoom = currentZoom+0.1;
+
+    videoElement.style.transform= `scale(${currentZoom})`;
+});
+
+zoomOut.addEventListener("click",function(){
+
+    if(currentZoom-0.1<minZoom){
+        return;
+
+    }
+    currentZoom = currentZoom-0.1;
+
+    videoElement.style.transform= `scale(${currentZoom})`;
+});
+
+
+
+
