@@ -37,21 +37,18 @@ let currentZoom =1;
         console.log("inside on data available");
 
     console.log(e.data);
-     videObject = new Blob ([e.data], {type :"video/mp4" });
-    console.log(videObject);
+     let videObject = new Blob ([e.data], {type :"video/mp4" });
+    //console.log(videObject);
 
-    let VideioUrl = URL.createObjectURL(videObject);
 
-    let aTag =document.createElement("a");
 
-    aTag.download =`Video${Date.now()}.mp4`;
-    aTag.href =VideioUrl;
+    // let VideioUrl = URL.createObjectURL(videObject);
+    // let aTag =document.createElement("a");
+    // aTag.download =`Video${Date.now()}.mp4`;
+    // aTag.href =VideioUrl;
+    // aTag.click();
 
-    // downloadButton.addEventListener("click",function(){
-    //     aTag.click();
-    // })
-
-    aTag.click();
+    addMedia(videObject,"video");
   
 };
 
@@ -60,57 +57,10 @@ mideaRecorder.onstop =function(){
 };
 
 
-recordButton.addEventListener("click",function(){
-          if(recordingState){
-              //already recording is going on 
-              //stop the recording 
-              mideaRecorder.stop();
-              
-              recordingState =false;
-              recordButton.classList.remove("animate-record");
-          }
-          else{
-                  // start the video recording 
-                  mideaRecorder.start();
-                 
-                  recordingState =true;
-
-                  recordButton.classList.add("animate-record");
-          }
-});
+recordButton.addEventListener("click",redcordMediaFun);
 
 
-capturePhoto.addEventListener("click",function(){
-    //canvas 
-    capturePhoto.classList.add("animate-capture")
-          
-      setTimeout(function(){
-        capturePhoto.classList.remove("animate-capture")
-      },1000);
-
-
-    let canvas =document.createElement("canvas");
-    canvas.width = 640;   //video widht
-    canvas.height =480  // video height
-
-
-    let ctx =canvas.getContext("2d");
-    ctx.drawImage(videoElement,0,0);
-
-    if(filterSelected!="none"){
-  ctx.fillStyle = filterSelected;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-    }
-
-
-    //download canvas as an image 
-    let aTag =document.createElement("a");
-    aTag.download =`image${Date.now()}.jpg`;
-    aTag.href = canvas.toDataURL("image/jpg");
-    aTag.click();
-
-});
-
+capturePhoto.addEventListener("click",capturePhotoFun);
 
 
 })();
@@ -182,4 +132,81 @@ zoomOut.addEventListener("click",function(){
 
 
 
+    function capturePhotoFun(){
+        //canvas 
+        capturePhoto.classList.add("animate-capture")
+              
+          setTimeout(function(){
+            capturePhoto.classList.remove("animate-capture")
+          },1000);
+    
+    
+        let canvas =document.createElement("canvas");
+        canvas.width = 640;   //video widht
+        canvas.height =480  // video height
+    
+    
+        let ctx =canvas.getContext("2d");
+    
+        if(currentZoom!=1){
+              ctx.translate(canvas.width/2,canvas.height/2);
+              ctx.scale(currentZoom,currentZoom);
+              ctx.translate(-canvas.width/2,-canvas.height/2);
+        }
+    
+    
+        ctx.drawImage(videoElement,0,0);
+    
+        if(filterSelected!="none"){
+      ctx.fillStyle = filterSelected;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+        }
+    
+    
+        //download canvas as an image 
+        // let aTag =document.createElement("a");
+        // aTag.download =`image${Date.now()}.jpg`;
+        // aTag.href = canvas.toDataURL("image/jpg");
+        // aTag.click();
 
+
+
+        //sace image to DB
+        let canvasURL =canvas.toDataURL("image.jpg");
+          
+        addMedia(canvasURL,"photo");
+       
+    }
+
+    function redcordMediaFun(){
+
+            if(recordingState){
+                //already recording is going on 
+                //stop the recording 
+                mideaRecorder.stop();
+                
+                recordingState =false;
+                recordButton.classList.remove("animate-record");
+            }
+            else{
+                    // start the video recording 
+                    mideaRecorder.start();
+                   
+                    recordingState =true;
+  
+                    recordButton.classList.add("animate-record");
+            }
+  
+    }
+
+    function addMedia(mediaURL,mediaType){
+        //db me medai add hojaega
+        let txnObject =db.transaction("Media","readwrite"); 
+        let mediaTable =txnObject.objectStore("Media");
+
+        mediaTable.add({mid : Date.now(),type : mediaType, url:mediaURL });
+        txnObject.onerror =function(e){
+            console.log("txn failed");
+            console.log(e);
+        }
+    }
