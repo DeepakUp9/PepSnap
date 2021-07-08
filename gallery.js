@@ -58,6 +58,14 @@ function fetchMedia(){
       <div class ="delete-media "> Delete </div>
       </div>`;
 
+        mediaDiv.querySelector(".download-media").addEventListener("click",function(){
+              doownloadMedia(mediaObj);
+        });
+
+        mediaDiv.querySelector(".delete-media").addEventListener("click",function(){
+            deleteMedia(mediaObj,mediaDiv);
+      });
+
       document.querySelector(".gallery").append(mediaDiv);
 
   }
@@ -67,7 +75,7 @@ function fetchMedia(){
 
     let mediaDiv =document.createElement("div");
     mediaDiv.classList.add("media-div");
-    mediaDiv.innerHTML =`<video class="media-video" controls> </video>
+    mediaDiv.innerHTML =`<video class="media-video" controls autuplay loop> </video>
     <div class="media-buttons">
     <div class="download-media"> Download</div>
     <div class ="delete-media "> Delete </div>
@@ -75,7 +83,43 @@ function fetchMedia(){
 
     
      mediaDiv.querySelector("video").src =URL.createObjectURL(mediaObj.url);
+     mediaDiv.querySelector(".download-media").addEventListener("click",function(){
+        doownloadMedia(mediaObj);
+  });
+
+  mediaDiv.querySelector(".delete-media").addEventListener("click",function(){
+    deleteMedia(mediaObj,mediaDiv);
+});
+
      document.querySelector(".gallery").append(mediaDiv);
 
+
+  }
+
+
+
+  function doownloadMedia(mediaObj){
+       let aTag =document.createElement("a");
+       if(mediaObj.type=="photo"){
+           aTag.download =`${mediaObj.mid}.jpg`;
+           aTag.href =mediaObj.url;
+       }
+       else{
+        aTag.download =`${mediaObj.mid}.mp4`;
+        aTag.href = URL.createObjectURL(mediaObj.url);
+       }
+
+       aTag.click();
+  }
+
+
+  function deleteMedia(mediaObj,mediaDiv){
+     
+    let mid = mediaObj.mid;
+    let txnObject =db.transaction("Media","readwrite");
+    let mediaTable =txnObject.objectStore("Media");
+    mediaTable.delete(mid); //remove from DB
+
+    mediaDiv.remove(); //remove from ui
 
   }
